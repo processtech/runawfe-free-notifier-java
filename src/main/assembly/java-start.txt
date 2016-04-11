@@ -1,0 +1,12 @@
+How to run runa rtn (runa task notifier)
+
+(Please set a correct WFE-server name in wfe.delegate.properties before running RTN)
+
+If there's path to swt-win32-3232.dll in system environment variable, run:
+javaw -cp .;rtn.jar ru.runa.notifier.PlatformLoader
+
+if swt-win32-3232.dll is in the same directory with rtn.jar, run:
+javaw -Djava.library.path=. -cp .;rtn.jar ru.runa.notifier.PlatformLoader
+
+if running runa rtn using runa_tasks.exe file, put swt-win32-3232.dll to the same directory with exe file. 
+

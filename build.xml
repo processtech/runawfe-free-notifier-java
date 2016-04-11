@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project basedir="." default="build" name="Runa Tasks Notifier">
+
+	<property name="src.dir" value="${basedir}/src/main/java/" />
+	<property name="resources.dir" value="${basedir}/src/main/resources/" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="nsis.dir" value="${basedir}/nsis" />
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="deploy.dir" value="${basedir}/deploy" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="jboss.version" value="4" />
+
+	<fileset id="local.lib.fileset" dir="${lib.dir}">
+		<exclude name="swt-*.jar" />
+		<include name="*.jar" />
+		<include name="${jboss.version}/*.jar" />
+	</fileset>
+
+	<path id="lib.classpath">
+		<fileset refid="local.lib.fileset" />
+	</path>
+	<path id="swt.lib.classpath">
+		<fileset dir="${lib.dir}" includes="swt-win32.jar" />
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${deploy.dir}" />
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${deploy.dir}" />
+		<mkdir dir="${build.dir}/classes/img" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac destdir="${classes.dir}/" srcdir="${src.dir}" debug="true" encoding="UTF-8" target="1.6">
+			<classpath refid="lib.classpath" />
+			<classpath refid="swt.lib.classpath" />
+		</javac>
+	</target>
+
+	<target name="build" depends="compile">
+
+		<unjar dest="${classes.dir}">
+			<fileset refid="local.lib.fileset" />
+		</unjar>
+
+		<copy todir="${build.dir}/classes/img" overwrite="true">
+			<fileset dir="${resources.dir}/img" />
+		</copy>
+		<copy todir="${build.dir}/classes" overwrite="true">
+			<fileset dir="${resources.dir}" includes="*.wav" />
+		</copy>
+		<native2ascii encoding="UTF-8" src="${resources.dir}" dest="${classes.dir}" includes="*.properties" />
+		<copy file="${resources.dir}/log4j.xml" todir="${classes.dir}" overwrite="true"/>
+		
+		<replace dir="${classes.dir}" includes="*.properties" token="#To rtn:" value=""/>
+
+		<jar jarfile="${deploy.dir}/rtn.jar" basedir="${classes.dir}">
+			<exclude name="application*.properties" />
+			<exclude name="ejb.properties" />
+			<exclude name="jndi.properties" />
+			<exclude name="kerberos.properties" />
+			<manifest>
+				<attribute name="Main-Class" value="ru.runa.notifier.PlatformLoader" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+		</jar>
+
+		<!-- copy file="${nsis.dir}/runa_tasks.exe" todir="${deploy.dir}" / -->
+		<copy todir="${deploy.dir}" overwrite="true">
+			<fileset dir="${resources.dir}" includes="*.properties" />
+			<fileset dir="${resources.dir}" includes="run.*" />
+		</copy>
+		<copy todir="${deploy.dir}" overwrite="true">
+			<fileset dir="${resources.dir}/jboss${jboss.version}" includes="*.properties" />
+		</copy>
+		<copy todir="${deploy.dir}" overwrite="true">
+			<fileset dir="${lib.dir}" includes="swt-*.jar"></fileset>
+		</copy>
+	</target>
+	
+</project>
