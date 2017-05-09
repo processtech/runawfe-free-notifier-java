@@ -115,6 +115,18 @@
 		    </properties>
 		</profile>
 		<profile>
+		    <id>linux32_2</id>
+		    <activation>
+		        <os>
+		            <family>linux</family>
+		            <arch>i386</arch>
+		        </os>
+		    </activation>
+		    <properties>
+		        <swt.artifactId>org.eclipse.swt.gtk.linux.x86</swt.artifactId>
+		    </properties>
+		</profile>
+		<profile>
 		    <id>linux64</id>
 		    <activation>
 		        <os>
