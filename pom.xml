@@ -130,7 +130,7 @@
 		    <id>linux64</id>
 		    <activation>
 		        <os>
-		            <family>linux_x86_64</family>
+		            <family>linux</family>
 		            <arch>amd64</arch>
 		        </os>
 		    </activation>
