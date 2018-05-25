@@ -10,19 +10,6 @@
 	<name>tasknotifier</name>
 	<description>task notifier client</description>
 
-	<repositories>
-		<repository>
-			<id>swt-repo</id>
-			<url>https://swt-repo.googlecode.com/svn/repo/</url>
-		</repository>
-	</repositories>
-
-	<properties>
-		<swt.version>3.7.2</swt.version>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<maven.compiler.source>1.6</maven.compiler.source>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>ru.runa.wfe</groupId>
@@ -73,7 +60,7 @@
 		<dependency>
 			<groupId>org.eclipse.swt</groupId>
 			<artifactId>${swt.artifactId}</artifactId>
-			<version>3.7.2</version>
+			<version>4.3</version>
 		</dependency>
 	</dependencies>
 
