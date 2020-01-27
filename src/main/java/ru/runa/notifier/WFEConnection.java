@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ru.runa.notifier.util.ResourcesManager;
+import ru.runa.notifier.util.ServerUrl;
 import ru.runa.wfe.webservice.AuthenticationAPI;
 import ru.runa.wfe.webservice.AuthenticationWebService;
 import ru.runa.wfe.webservice.TaskAPI;
@@ -17,7 +18,7 @@ public class WFEConnection {
 
     private static URL getUrl(String serviceName) {
         try {
-            String url = ResourcesManager.getWebServiceUrl();
+            String url = ServerUrl.SERVER_URL.getUrl()+ResourcesManager.getWebServiceUrl();
             url = url.replaceAll("SERVICE_NAME", serviceName);
             log.debug("Using " + url);
             return new URL(url);

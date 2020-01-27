@@ -156,11 +156,15 @@ public class ResourcesManager {
     }
 
     public static String getAppServerVersionUrl() {
-        return applyPattern("http://${server.name}:${server.port}/version");
+        return "/version";
     }
 
     public static String getWebServiceUrl() {
         return applyPattern(getServerType().getUrlPattern());
+    }
+    
+    public static String getDefaultServerUrl() {
+        return PROPERTIES.getStringProperty("userinput.default.server.url", "");
     }
 
     private static final Pattern VARIABLE_REGEXP = Pattern.compile("\\$\\{(.*?[^\\\\])\\}");
@@ -172,7 +176,7 @@ public class ResourcesManager {
             String name = matcher.group(1);
             String value = PROPERTIES.getStringPropertyNotNull(name);
             if ("server.version".equals(name) && "auto".equals(value)) {
-                String versionUrl = getHttpServerUrl() + "/version";
+                String versionUrl = ServerUrl.SERVER_URL.getUrl() + "/wfe/version";
                 try {
                     InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream());
                     value = CharStreams.toString(reader);

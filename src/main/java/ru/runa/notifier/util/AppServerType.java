@@ -8,9 +8,9 @@ import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 
 public enum AppServerType {
-    jboss4("http://${server.name}:${server.port}/runawfe-wfe-service-${server.version}/SERVICE_NAMEServiceBean?wsdl"),
+    jboss4("/runawfe-wfe-service-${server.version}/SERVICE_NAMEServiceBean?wsdl"),
     //
-    jboss7("http://${server.name}:${server.port}/wfe-service-${server.version}/SERVICE_NAMEWebService/SERVICE_NAMEAPI?wsdl"),
+    jboss7("/wfe-service-${server.version}/SERVICE_NAMEWebService/SERVICE_NAMEAPI?wsdl"),
     //
     auto("");
 
