@@ -44,7 +44,6 @@ import ru.runa.notifier.tray.SystemTray;
 import ru.runa.notifier.util.AePlayWave;
 import ru.runa.notifier.util.ImageManager;
 import ru.runa.notifier.util.ResourcesManager;
-import ru.runa.notifier.util.ServerUrl;
 import ru.runa.notifier.util.WidgetsManager;
 import ru.runa.notifier.view.ViewChangeListener;
 
@@ -136,7 +135,7 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     public void openStartPage() {
         if (isChangeUrl()) {
             String targetUrl;
-             String serverUrl = ServerUrl.SERVER_URL.getUrl()+"/wfe";
+            String serverUrl = ResourcesManager.getDefaultServerUrl() + "/wfe";
             if (LoginHelper.getWebParameters() == null || LoginHelper.getWebParameters().length() == 0) {
                 targetUrl = serverUrl + ResourcesManager.getLoginRelativeUrl();
             } else {

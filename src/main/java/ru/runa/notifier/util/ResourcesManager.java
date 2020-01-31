@@ -151,10 +151,6 @@ public class ResourcesManager {
         return AppServerType.valueOf(enumValue);
     }
 
-    public static String getHttpServerUrl() {
-        return applyPattern("http://${server.name}:${server.port}/wfe");
-    }
-
     public static String getAppServerVersionUrl() {
         return "/version";
     }
@@ -164,7 +160,8 @@ public class ResourcesManager {
     }
     
     public static String getDefaultServerUrl() {
-        return PROPERTIES.getStringProperty("userinput.default.server.url", "");
+        String serverUrl = PROPERTIES.getStringProperty("server.url", "");
+        return serverUrl.endsWith("/") ? serverUrl.substring(0, serverUrl.length()-1) : serverUrl;
     }
 
     private static final Pattern VARIABLE_REGEXP = Pattern.compile("\\$\\{(.*?[^\\\\])\\}");
@@ -176,7 +173,7 @@ public class ResourcesManager {
             String name = matcher.group(1);
             String value = PROPERTIES.getStringPropertyNotNull(name);
             if ("server.version".equals(name) && "auto".equals(value)) {
-                String versionUrl = ServerUrl.SERVER_URL.getUrl() + "/wfe/version";
+                String versionUrl = ResourcesManager.getDefaultServerUrl() + "/wfe/version";
                 try {
                     InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream());
                     value = CharStreams.toString(reader);
