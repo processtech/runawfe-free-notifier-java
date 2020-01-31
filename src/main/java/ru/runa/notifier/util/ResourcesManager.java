@@ -160,8 +160,10 @@ public class ResourcesManager {
     }
     
     public static String getDefaultServerUrl() {
-        String serverUrl = PROPERTIES.getStringProperty("server.url", "");
-        return serverUrl.endsWith("/") ? serverUrl.substring(0, serverUrl.length()-1) : serverUrl;
+        String serverUrl = PROPERTIES.getStringProperty("server.protocol", "http") + "://" +
+                           PROPERTIES.getStringProperty("server.host", "localhost") + ":" +
+                           PROPERTIES.getStringProperty("server.port", "8080");        
+        return serverUrl;
     }
 
     private static final Pattern VARIABLE_REGEXP = Pattern.compile("\\$\\{(.*?[^\\\\])\\}");
