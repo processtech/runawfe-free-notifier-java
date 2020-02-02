@@ -146,17 +146,8 @@ public class ResourcesManager {
         return 1000 * PROPERTIES.getIntegerProperty("unread.tasks.notification.timeout", 0);
     }
 
-    private static AppServerType getServerType() {
-        String enumValue = PROPERTIES.getStringPropertyNotNull("application.server.type");
-        return AppServerType.valueOf(enumValue);
-    }
-
-    public static String getAppServerVersionUrl() {
-        return "/version";
-    }
-
-    public static String getWebServiceUrl() {
-        return applyPattern(getServerType().getUrlPattern());
+    public static String getWebServiceUrl() {       
+       return applyPattern(PROPERTIES.getStringProperty("service.url.pattern"));
     }
     
     public static String getDefaultServerUrl() {
@@ -168,6 +159,7 @@ public class ResourcesManager {
 
     private static final Pattern VARIABLE_REGEXP = Pattern.compile("\\$\\{(.*?[^\\\\])\\}");
 
+  
     private static String applyPattern(String pattern) {
         Matcher matcher = VARIABLE_REGEXP.matcher(pattern);
         StringBuffer buffer = new StringBuffer();
@@ -177,13 +169,13 @@ public class ResourcesManager {
             if ("server.version".equals(name) && "auto".equals(value)) {
                 String versionUrl = ResourcesManager.getDefaultServerUrl() + "/wfe/version";
                 try {
-                    InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream());
-                    value = CharStreams.toString(reader);
-                    int colonIndex = value.indexOf(":");
-                    if (colonIndex != -1) {
-                        value = value.substring(colonIndex + 1);
+                    try (InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream())) {
+                        value = CharStreams.toString(reader);
+                        int colonIndex = value.indexOf(":");
+                        if (colonIndex != -1) {
+                            value = value.substring(colonIndex + 1);
+                        }
                     }
-                    reader.close();
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to acquire version using " + versionUrl);
                 }
@@ -193,5 +185,4 @@ public class ResourcesManager {
         matcher.appendTail(buffer);
         return buffer.toString();
     }
-
 }
