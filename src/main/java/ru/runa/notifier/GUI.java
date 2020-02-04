@@ -135,7 +135,7 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     public void openStartPage() {
         if (isChangeUrl()) {
             String targetUrl;
-            String serverUrl = ResourcesManager.getDefaultServerUrl() + "/wfe";
+            String serverUrl = ResourcesManager.getServerUrl() + "/wfe";
             if (LoginHelper.getWebParameters() == null || LoginHelper.getWebParameters().length() == 0) {
                 targetUrl = serverUrl + ResourcesManager.getLoginRelativeUrl();
             } else {

@@ -17,7 +17,7 @@ public class WFEConnection {
 
     private static URL getUrl(String serviceName) {
         try {
-            String url = ResourcesManager.getDefaultServerUrl() + ResourcesManager.getWebServiceUrl();
+            String url = ResourcesManager.getServerUrl() + ResourcesManager.getWebServiceUrl();
             url = url.replaceAll("SERVICE_NAME", serviceName);
             log.debug("Using " + url);
             return new URL(url);

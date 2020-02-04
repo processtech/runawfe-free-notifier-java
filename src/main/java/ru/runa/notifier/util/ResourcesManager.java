@@ -150,7 +150,7 @@ public class ResourcesManager {
        return applyPattern(PROPERTIES.getStringProperty("service.url.pattern"));
     }
     
-    public static String getDefaultServerUrl() {
+    public static String getServerUrl() {
         String serverUrl = PROPERTIES.getStringProperty("server.protocol", "http") + "://" +
                            PROPERTIES.getStringProperty("server.host", "localhost") + ":" +
                            PROPERTIES.getStringProperty("server.port", "8080");        
@@ -167,7 +167,7 @@ public class ResourcesManager {
             String name = matcher.group(1);
             String value = PROPERTIES.getStringPropertyNotNull(name);
             if ("server.version".equals(name) && "auto".equals(value)) {
-                String versionUrl = ResourcesManager.getDefaultServerUrl() + "/wfe/version";
+                String versionUrl = ResourcesManager.getServerUrl() + "/wfe/version";
                 try {
                     try (InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream())) {
                         value = CharStreams.toString(reader);
