@@ -69,8 +69,8 @@ public class TaskChecker {
 
     public void start() {
         timer1 = new Timer();
-        timer1.schedule(tasksChecker, 0, ResourcesManager.getCheckTasksTimeout());
-        int unreadTasksNotification = ResourcesManager.getUnreadTasksNotificationTimeout();
+        timer1.schedule(tasksChecker, 0, GUI.setting.getCheckTasksTimeout());
+        int unreadTasksNotification = GUI.setting.getUnreadTasksNotificationTimeout();
         if (unreadTasksNotification > 0) {
             timer2 = new Timer();
             timer2.schedule(unreadTaskNotifier, unreadTasksNotification, unreadTasksNotification);

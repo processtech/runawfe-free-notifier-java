@@ -261,7 +261,7 @@ public class SystemTrayAlert {
         if (autoClosePopup != null && !autoClosePopup.isStopped()) {
             autoClosePopup.stopThread();
         }
-        final int timeout = ResourcesManager.getAutoClosePopupTimeout();
+        final int timeout = GUI.setting.getAutoClosePopupTimeout();
         if (timeout <= 0) {
             return;
         }

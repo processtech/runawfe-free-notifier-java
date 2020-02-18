@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.io.CharStreams;
+import ru.runa.notifier.GUI;
 
 /**
  * Created on 2006
@@ -150,13 +151,22 @@ public class ResourcesManager {
        return applyPattern(PROPERTIES.getStringProperty("service.url.pattern"));
     }
     
-    public static String getServerUrl() {
-        String serverUrl = PROPERTIES.getStringProperty("server.protocol", "http") + "://" +
-                           PROPERTIES.getStringProperty("server.host", "localhost") + ":" +
-                           PROPERTIES.getStringProperty("server.port", "8080");        
-        return serverUrl;
+    public static String getServerUrl() {          
+        return getProtocol() + "://" + getHost() + ":" + getPort();
     }
 
+    public static String getProtocol() {        
+        return PROPERTIES.getStringProperty("server.protocol", "http");
+    }
+    
+    public static String getHost() {        
+        return PROPERTIES.getStringProperty("server.host", "localhost");
+    }
+    
+    public static String getPort() {        
+        return PROPERTIES.getStringProperty("server.port", "8080");
+    }
+    
     private static final Pattern VARIABLE_REGEXP = Pattern.compile("\\$\\{(.*?[^\\\\])\\}");
 
   
@@ -167,7 +177,7 @@ public class ResourcesManager {
             String name = matcher.group(1);
             String value = PROPERTIES.getStringPropertyNotNull(name);
             if ("server.version".equals(name) && "auto".equals(value)) {
-                String versionUrl = ResourcesManager.getServerUrl() + "/wfe/version";
+                String versionUrl = GUI.setting.getUrl() + "/wfe/version";
                 try {
                     try (InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream())) {
                         value = CharStreams.toString(reader);
@@ -184,5 +194,53 @@ public class ResourcesManager {
         }
         matcher.appendTail(buffer);
         return buffer.toString();
+    }
+    
+    public static String getLabelSetting() {
+        return PROPERTIES.getStringProperty("label.setting");
+    }
+    
+    public static String getLabelApply() {
+        return PROPERTIES.getStringProperty("label.apply");
+    }
+    
+    public static String getLabelCancel() {
+        return PROPERTIES.getStringProperty("label.cancel");
+    }
+    
+    public static String getLabelAuthType() {
+        return PROPERTIES.getStringProperty("label.auth.type");
+    }
+    
+    public static String getLabelProtocol() {
+        return PROPERTIES.getStringProperty("label.protocol");
+    }
+    
+    public static String getLabelHost() {
+        return PROPERTIES.getStringProperty("label.host");
+    }
+    
+    public static String getLabelPort() {
+        return PROPERTIES.getStringProperty("label.port");
+    }
+    
+    public static String getLabelCheckTasks() {
+        return PROPERTIES.getStringProperty("label.check.tasks.timeout");
+    }
+    
+    public static String getLabelPopupAutoclose() {
+        return PROPERTIES.getStringProperty("label.popup.autoclose.timeout");
+    }
+    
+    public static String getLabelUnreadTasks() {
+        return PROPERTIES.getStringProperty("label.unread.tasks.notification.timeout");
+    }
+    
+    public static String getLabelSoundEnabled() {
+        return PROPERTIES.getStringProperty("label.sounds.enabled");
+    }
+    
+    public static String getLabelLoginSilently() {
+        return PROPERTIES.getStringProperty("label.login.silently");
     }
 }

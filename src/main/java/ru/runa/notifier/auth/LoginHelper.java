@@ -71,7 +71,7 @@ public class LoginHelper {
         if (!tryLogin) {
             return;
         }
-        String authType = ResourcesManager.getAuthenticationType();
+        String authType = GUI.setting.getAuthenticationType();//ResourcesManager.getAuthenticationType();
         Authenticator authenticator = ClassLoaderUtil.instantiate(authenticators.get(authType));
         while (user == null) {
             if (!tryLogin) {

@@ -44,6 +44,7 @@ import ru.runa.notifier.tray.SystemTray;
 import ru.runa.notifier.util.AePlayWave;
 import ru.runa.notifier.util.ImageManager;
 import ru.runa.notifier.util.ResourcesManager;
+import ru.runa.notifier.util.Setting;
 import ru.runa.notifier.util.WidgetsManager;
 import ru.runa.notifier.view.ViewChangeListener;
 
@@ -67,8 +68,11 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
 
     private static BrowserView browserView;
 
+    public static final Setting setting = Setting.SETTING; 
+    
     public GUI(Display display, Shell splashShell) {
         GUI.display = display;
+        setting.read();
         initComponents();
         splashShell.dispose();
     }
@@ -135,7 +139,8 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     public void openStartPage() {
         if (isChangeUrl()) {
             String targetUrl;
-            String serverUrl = ResourcesManager.getServerUrl() + "/wfe";
+            Setting.SETTING.getUrl();
+            String serverUrl = GUI.setting.getUrl() + "/wfe";
             if (LoginHelper.getWebParameters() == null || LoginHelper.getWebParameters().length() == 0) {
                 targetUrl = serverUrl + ResourcesManager.getLoginRelativeUrl();
             } else {
