@@ -143,7 +143,7 @@ public class SettingDialog extends Dialog {
         buttonRbGroup.setLayout(gridLayout);
         buttonRbGroup.setLayoutData(new GridData(GridData.FILL_VERTICAL));
         
-        String items[] = {"userinput", "sspiKerberos", "kerberos"};
+        String items[] =  ResourcesManager.getAuthTypes();// {"userinput", "sspiKerberos", "kerberos"};
 
         for (String item : items) {
             Button button = new Button(buttonRbGroup, SWT.RADIO);

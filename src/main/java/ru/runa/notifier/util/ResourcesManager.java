@@ -243,4 +243,9 @@ public class ResourcesManager {
     public static String getLabelLoginSilently() {
         return PROPERTIES.getStringProperty("label.login.silently");
     }
+    
+    public static String[] getAuthTypes() {
+        String authTypes = PROPERTIES.getStringProperty("authentication.all.types");
+        return authTypes.split(";");
+    }
 }
