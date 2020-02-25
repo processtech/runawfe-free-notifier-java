@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ru.runa.notifier.GUI;
 
 /**
  *
@@ -49,6 +50,8 @@ public class Setting {
 
     private Integer unreadTasksNotificationTimeout = ResourcesManager.getUnreadTasksNotificationTimeout();
 
+    private HttpURLConnection connection;
+    
     public void read() {
 
         final String srcProperties = System.getProperty("user.home") + "\\config.properties";
@@ -85,7 +88,8 @@ public class Setting {
             tmpTimeout = Integer.parseInt(properties.getProperty("unread.tasks.notification.timeout", "0")) * 1000;
             setUnreadTasksNotificationTimeout((tmpTimeout != 0) ? tmpTimeout : unreadTasksNotificationTimeout);
 
-            selectServerProtocol();
+            connection = new ConnectionHelper().getConnection();
+            
         } catch (IOException e) {
             log.debug(e.getMessage());
         }
@@ -122,35 +126,6 @@ public class Setting {
             properties.store(out, "foo");
         } catch (IOException e) {
             log.error(e.getMessage());
-        }
-    }
-
-    private boolean testProtocol(String protocol) {
-
-        try {
-            URL url = new URL(protocol + "://" + host + ":" + port + "/wfe/version");
-
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-            int responseCode = con.getResponseCode();
-
-            return (responseCode == 200);
-        } catch (IOException ex) {
-
-            log.debug(ex.getMessage());
-        }
-        return false;
-    }
-
-    private void selectServerProtocol() {
-        if (protocol.equals("auto")) {
-
-            if (testProtocol("https")) {
-                setProtocol("https");
-            } else if (testProtocol("http")) {
-                setProtocol("http");
-            }
-            log.info("use protocol - " + protocol);
         }
     }
 
@@ -244,6 +219,46 @@ public class Setting {
 
     public void setLoginSilently(Boolean isLoginSilently) {
         this.isLoginSilently = isLoginSilently;
+    }
+
+    public HttpURLConnection getConnection() {
+        return connection;
+    }
+
+    private class ConnectionHelper {
+
+        private HttpURLConnection connection = null;
+
+        private int setConnection(String versionUrl) {
+            try {
+                URL url = new URL(versionUrl);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("User-Agent", "Runa Task Notifier");
+                setProtocol(url.getProtocol());
+                setPort(url.getPort() == -1 ? "80" : new Integer(url.getPort()).toString());
+                setHost(url.getHost());
+                return connection.getResponseCode();
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+            return HttpURLConnection.HTTP_BAD_REQUEST;
+        }
+
+        public ConnectionHelper() {
+
+            protocol = protocol.equals("auto") ? "https" : protocol;
+            String versionUrl = getUrl() + "/wfe/version";
+            
+            if (setConnection(versionUrl) == HttpURLConnection.HTTP_MOVED_PERM) {  //HTTP - 301 на сервере редирект
+                setConnection(connection.getHeaderField("Location"));
+            }
+        }
+
+        public HttpURLConnection getConnection() {
+            return connection;
+        }
+
     }
 
 }

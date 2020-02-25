@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.io.CharStreams;
+import java.io.InputStream;
 import ru.runa.notifier.GUI;
 
 /**
@@ -177,9 +178,10 @@ public class ResourcesManager {
             String name = matcher.group(1);
             String value = PROPERTIES.getStringPropertyNotNull(name);
             if ("server.version".equals(name) && "auto".equals(value)) {
-                String versionUrl = GUI.setting.getUrl() + "/wfe/version";
+                
                 try {
-                    try (InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream())) {
+                    InputStream in = GUI.setting.getConnection().getInputStream();
+                    try (InputStreamReader reader = new InputStreamReader(in)) {
                         value = CharStreams.toString(reader);
                         int colonIndex = value.indexOf(":");
                         if (colonIndex != -1) {
@@ -187,7 +189,7 @@ public class ResourcesManager {
                         }
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException("Unable to acquire version using " + versionUrl);
+                    throw new RuntimeException("Unable to acquire version using " + GUI.setting.getUrl() + "/wfe/version");
                 }
             }
             matcher.appendReplacement(buffer, Matcher.quoteReplacement(value));

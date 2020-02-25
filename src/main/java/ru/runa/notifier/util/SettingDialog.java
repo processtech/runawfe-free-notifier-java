@@ -85,12 +85,12 @@ public class SettingDialog extends Dialog {
             });
         }
         
-        new Label(composite, SWT.CENTER).setText("Host: ");
+        new Label(composite, SWT.CENTER).setText(ResourcesManager.getLabelHost());
         hostField = new Text(composite, SWT.BORDER);
         hostField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         hostField.setText(GUI.setting.getHost());
 
-        new Label(composite, SWT.CENTER).setText("Port: ");
+        new Label(composite, SWT.CENTER).setText(ResourcesManager.getLabelProtocol());
         portField = new Text(composite, SWT.BORDER);
         portField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         portField.setText(GUI.setting.getPort());

@@ -12,7 +12,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
@@ -20,7 +19,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -130,7 +128,8 @@ public class UserInputAuthenticator implements Authenticator {
 
             Link linkSetting = new Link(composite, SWT.NONE);
             linkSetting.setText("<a href=\"http://localhost:8080\">" + ResourcesManager.getLabelSetting() + "</a>");
-
+            // linkSetting.setText(ResourcesManager.getLabelSetting());
+            
             linkSetting.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
