@@ -90,7 +90,7 @@ public class SettingDialog extends Dialog {
         hostField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         hostField.setText(GUI.setting.getHost());
 
-        new Label(composite, SWT.CENTER).setText(ResourcesManager.getLabelProtocol());
+        new Label(composite, SWT.CENTER).setText(ResourcesManager.getLabelPort());
         portField = new Text(composite, SWT.BORDER);
         portField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         portField.setText(GUI.setting.getPort());

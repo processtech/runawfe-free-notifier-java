@@ -54,7 +54,7 @@ public class Setting {
     
     public void read() {
 
-        final String srcProperties = System.getProperty("user.home") + "\\config.properties";
+        final String srcProperties = System.getProperty("user.home") + "/config.properties";
 
         Properties properties = new Properties();
         try (InputStream in = new FileInputStream(srcProperties)) {
@@ -91,7 +91,7 @@ public class Setting {
             connection = new ConnectionHelper().getConnection();
             
         } catch (IOException e) {
-            log.debug(e.getMessage());
+            log.warn(e.getMessage());
         }
 
     }
@@ -120,12 +120,12 @@ public class Setting {
 
         properties.setProperty("unread.tasks.notification.timeout", unreadTasksNotificationTimeout.toString());
 
-        final String srcProperties = System.getProperty("user.home") + "\\config.properties";
+        final String srcProperties = System.getProperty("user.home") + "/config.properties";
 
         try (OutputStream out = new FileOutputStream(srcProperties)) {
-            properties.store(out, "foo");
+            properties.store(out, "Runa Task notifier config");
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
         }
     }
 
@@ -236,7 +236,7 @@ public class Setting {
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("User-Agent", "Runa Task Notifier");
                 setProtocol(url.getProtocol());
-                setPort(url.getPort() == -1 ? "80" : new Integer(url.getPort()).toString());
+                setPort(url.getPort() == -1 ? "80" : Integer.toString(url.getPort()));
                 setHost(url.getHost());
                 return connection.getResponseCode();
             } catch (IOException e) {
