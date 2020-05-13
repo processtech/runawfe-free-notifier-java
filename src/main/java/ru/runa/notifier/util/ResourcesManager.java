@@ -19,7 +19,6 @@
 package ru.runa.notifier.util;
 
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +34,7 @@ import ru.runa.notifier.GUI;
 
 public class ResourcesManager {
     private final static PropertyResources PROPERTIES = new PropertyResources("application.properties");
-
+     
     public static boolean isRestartRtnOnClose() {
         return PROPERTIES.getBooleanProperty("restart.rtn.onclose", false);
     }
@@ -180,15 +179,17 @@ public class ResourcesManager {
             if ("server.version".equals(name) && "auto".equals(value)) {
                 
                 try {
-                    InputStream in = GUI.setting.getConnection().getInputStream();
-                    try (InputStreamReader reader = new InputStreamReader(in)) {
-                        value = CharStreams.toString(reader);
-                        int colonIndex = value.indexOf(":");
-                        if (colonIndex != -1) {
-                            value = value.substring(colonIndex + 1);
-                        }
+                    try (InputStream in = GUI.setting.getConnection().getInputStream()) {
+                        try (InputStreamReader reader = new InputStreamReader(in)) {
+                            value = CharStreams.toString(reader);
+                            int colonIndex = value.indexOf(":");
+                            if (colonIndex != -1) {
+                                value = value.substring(colonIndex + 1);
+                            }
+                        } 
                     }
-                } catch (Exception e) {
+                } 
+                catch (Exception e) {
                     throw new RuntimeException("Unable to acquire version using " + GUI.setting.getUrl() + "/wfe/version");
                 }
             }

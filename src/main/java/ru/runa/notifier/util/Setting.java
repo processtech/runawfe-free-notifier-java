@@ -16,7 +16,6 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ru.runa.notifier.GUI;
 
 /**
  *
@@ -49,8 +48,6 @@ public class Setting {
     private Boolean isSoundsEnabled = ResourcesManager.isSoundsEnabled();
 
     private Integer unreadTasksNotificationTimeout = ResourcesManager.getUnreadTasksNotificationTimeout();
-
-    private HttpURLConnection connection;
     
     public void read() {
 
@@ -87,9 +84,7 @@ public class Setting {
 
             tmpTimeout = Integer.parseInt(properties.getProperty("unread.tasks.notification.timeout", "0")) * 1000;
             setUnreadTasksNotificationTimeout((tmpTimeout != 0) ? tmpTimeout : unreadTasksNotificationTimeout);
-
-            connection = new ConnectionHelper().getConnection();
-            
+ 
         } catch (IOException e) {
             log.warn(e.getMessage());
         }
@@ -222,7 +217,7 @@ public class Setting {
     }
 
     public HttpURLConnection getConnection() {
-        return connection;
+        return new ConnectionHelper().getConnection();
     }
 
     private class ConnectionHelper {
