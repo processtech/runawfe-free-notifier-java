@@ -38,7 +38,7 @@ public class UserInputAuthenticator implements Authenticator {
     @Override
     public User authenticate() throws Exception {
         try {
-            if (ResourcesManager.isLoginSilently()) {
+            if (GUI.setting.isLoginSilently()) {   
                 try {
                     login = GUI.setting.getLogin();
                     password = GUI.setting.getPassword();

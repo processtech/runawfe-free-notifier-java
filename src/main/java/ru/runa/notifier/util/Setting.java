@@ -86,7 +86,7 @@ public class Setting {
             setUnreadTasksNotificationTimeout((tmpTimeout != 0) ? tmpTimeout : unreadTasksNotificationTimeout);
  
         } catch (IOException e) {
-            log.warn(e.getMessage());
+            log.info("config.properties не найден. Будет создан новый с настройками по умолчанию.");
         }
 
     }
