@@ -1,24 +1,3 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2005, JBoss Inc., and individual contributors as indicated
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
 package ru.runa.notifier.util;
 
 import java.io.IOException;
@@ -36,9 +15,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
-/**
- * Utils.
- */
 public class ClassLoaderUtil {
     private static final Log log = LogFactory.getLog(ClassLoaderUtil.class);
     private static final ClassLoader extensionClassLoader = ClassLoaderUtil.class.getClassLoader();
@@ -141,15 +117,6 @@ public class ClassLoaderUtil {
         return url;
     }
 
-    /**
-     * Get resource as stream.
-     * 
-     * @param resourceName
-     *            classpath resource name
-     * @param callingClass
-     *            package of this class will be inspected for resources
-     * @return resource stream or <code>null</code>
-     */
     public static InputStream getAsStream(String resourceName, Class<?> callingClass) {
         URL url = getAsURL(resourceName, callingClass);
         try {
@@ -159,15 +126,6 @@ public class ClassLoaderUtil {
         }
     }
 
-    /**
-     * Get resource as stream.
-     * 
-     * @param resourceName
-     *            classpath resource name
-     * @param callingClass
-     *            package of this class will be inspected for resources
-     * @return resource stream
-     */
     public static InputStream getAsStreamNotNull(String resourceName, Class<?> callingClass) {
         InputStream stream = getAsStream(resourceName, callingClass);
         if (stream == null) {

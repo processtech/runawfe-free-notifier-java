@@ -17,15 +17,6 @@ import com.sun.jna.platform.win32.Sspi.TimeStamp;
 import com.sun.jna.platform.win32.W32Errors;
 import com.sun.jna.ptr.NativeLongByReference;
 
-/**
- * 
- * Комментарий The code has been written with help
- * com.sun.jna.platform.win32.Secur32Test. Class get a HANDLE for outbound
- * (client) credentials and creates a client-side security context with help
- * Security Support Provider Interface(SSPI)
- * 
- * @author riven 15.02.2012
- */
 public class SSPIKerberosAuthenticator implements Authenticator {
     private static final Log log = LogFactory.getLog(SSPIKerberosAuthenticator.class);
 
