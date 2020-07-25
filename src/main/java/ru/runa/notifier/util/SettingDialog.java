@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.runa.notifier.util;
 
 import org.eclipse.swt.SWT;
@@ -215,14 +210,12 @@ public class SettingDialog extends Dialog {
     
     private void createPanelControls(Composite parent)
     {
-        // Панель кнопок управления
         pnlButtons = new Composite(parent, SWT.NONE);
 
         GridData gridData = new GridData(SWT.LEFT);
         gridData.heightHint = 36;
         pnlButtons.setLayoutData(gridData);
 
-        // Размещение кнопки в панели pnlButtons
         pnlButtons.setLayout(new FillLayout());
       
         Button buttonApply = new Button(pnlButtons, SWT.PUSH);

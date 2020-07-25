@@ -2,7 +2,6 @@ package ru.runa.notifier.auth;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
@@ -21,7 +20,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
 import ru.runa.notifier.GUI;
 import ru.runa.notifier.WFEConnection;
 import ru.runa.notifier.util.ResourcesManager;
@@ -126,11 +124,10 @@ public class UserInputAuthenticator implements Authenticator {
             passwordField = new Text(composite, SWT.BORDER | SWT.PASSWORD);
             passwordField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            Link linkSetting = new Link(composite, SWT.NONE);
-            linkSetting.setText("<a href=\"http://localhost:8080\">" + ResourcesManager.getLabelSetting() + "</a>");
-            // linkSetting.setText(ResourcesManager.getLabelSetting());
+            Link settingsLink = new Link(composite, SWT.NONE);
+            settingsLink.setText("<a>" + ResourcesManager.getLabelSetting() + "</a>");
             
-            linkSetting.addSelectionListener(new SelectionAdapter() {
+            settingsLink.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     SettingDialog settingsDialog = new SettingDialog(shell);

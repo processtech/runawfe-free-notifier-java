@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.runa.notifier.util;
 
 import java.io.FileInputStream;
@@ -13,7 +8,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -86,7 +80,7 @@ public class Setting {
             setUnreadTasksNotificationTimeout((tmpTimeout != 0) ? tmpTimeout : unreadTasksNotificationTimeout);
  
         } catch (IOException e) {
-            log.info("config.properties не найден. Будет создан новый с настройками по умолчанию.");
+            log.debug("config.properties not found by path " + srcProperties + ", using defaults");
         }
 
     }
@@ -120,7 +114,7 @@ public class Setting {
         try (OutputStream out = new FileOutputStream(srcProperties)) {
             properties.store(out, "Runa Task notifier config");
         } catch (IOException e) {
-            log.warn(e.getMessage());
+            log.warn("Unable to save " + srcProperties + ": " + e);
         }
     }
 
@@ -245,7 +239,7 @@ public class Setting {
             protocol = protocol.equals("auto") ? "https" : protocol;
             String versionUrl = getUrl() + "/wfe/version";
             
-            if (setConnection(versionUrl) == HttpURLConnection.HTTP_MOVED_PERM) {  //HTTP - 301 на сервере редирект
+            if (setConnection(versionUrl) == HttpURLConnection.HTTP_MOVED_PERM) {
                 setConnection(connection.getHeaderField("Location"));
             }
         }
