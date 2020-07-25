@@ -19,11 +19,12 @@
 package ru.runa.notifier.util;
 
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.io.CharStreams;
+import java.io.InputStream;
+import ru.runa.notifier.GUI;
 
 /**
  * Created on 2006
@@ -33,7 +34,7 @@ import com.google.common.io.CharStreams;
 
 public class ResourcesManager {
     private final static PropertyResources PROPERTIES = new PropertyResources("application.properties");
-
+     
     public static boolean isRestartRtnOnClose() {
         return PROPERTIES.getBooleanProperty("restart.rtn.onclose", false);
     }
@@ -146,25 +147,29 @@ public class ResourcesManager {
         return 1000 * PROPERTIES.getIntegerProperty("unread.tasks.notification.timeout", 0);
     }
 
-    private static AppServerType getServerType() {
-        String enumValue = PROPERTIES.getStringPropertyNotNull("application.server.type");
-        return AppServerType.valueOf(enumValue);
+    public static String getWebServiceUrl() {       
+       return applyPattern(PROPERTIES.getStringProperty("service.url.pattern"));
+    }
+    
+    public static String getServerUrl() {          
+        return getProtocol() + "://" + getHost() + ":" + getPort();
     }
 
-    public static String getHttpServerUrl() {
-        return applyPattern("http://${server.name}:${server.port}/wfe");
+    public static String getProtocol() {        
+        return PROPERTIES.getStringProperty("server.protocol", "http");
     }
-
-    public static String getAppServerVersionUrl() {
-        return applyPattern("http://${server.name}:${server.port}/version");
+    
+    public static String getHost() {        
+        return PROPERTIES.getStringProperty("server.host", "localhost");
     }
-
-    public static String getWebServiceUrl() {
-        return applyPattern(getServerType().getUrlPattern());
+    
+    public static String getPort() {        
+        return PROPERTIES.getStringProperty("server.port", "8080");
     }
-
+    
     private static final Pattern VARIABLE_REGEXP = Pattern.compile("\\$\\{(.*?[^\\\\])\\}");
 
+  
     private static String applyPattern(String pattern) {
         Matcher matcher = VARIABLE_REGEXP.matcher(pattern);
         StringBuffer buffer = new StringBuffer();
@@ -172,17 +177,20 @@ public class ResourcesManager {
             String name = matcher.group(1);
             String value = PROPERTIES.getStringPropertyNotNull(name);
             if ("server.version".equals(name) && "auto".equals(value)) {
-                String versionUrl = getHttpServerUrl() + "/version";
+                
                 try {
-                    InputStreamReader reader = new InputStreamReader(new URL(versionUrl).openStream());
-                    value = CharStreams.toString(reader);
-                    int colonIndex = value.indexOf(":");
-                    if (colonIndex != -1) {
-                        value = value.substring(colonIndex + 1);
+                    try (InputStream in = GUI.setting.getConnection().getInputStream()) {
+                        try (InputStreamReader reader = new InputStreamReader(in)) {
+                            value = CharStreams.toString(reader);
+                            int colonIndex = value.indexOf(":");
+                            if (colonIndex != -1) {
+                                value = value.substring(colonIndex + 1);
+                            }
+                        } 
                     }
-                    reader.close();
-                } catch (Exception e) {
-                    throw new RuntimeException("Unable to acquire version using " + versionUrl);
+                } 
+                catch (Exception e) {
+                    throw new RuntimeException("Unable to acquire version using " + GUI.setting.getUrl() + "/wfe/version");
                 }
             }
             matcher.appendReplacement(buffer, Matcher.quoteReplacement(value));
@@ -190,5 +198,57 @@ public class ResourcesManager {
         matcher.appendTail(buffer);
         return buffer.toString();
     }
-
+    
+    public static String getLabelSetting() {
+        return PROPERTIES.getStringProperty("label.setting");
+    }
+    
+    public static String getLabelApply() {
+        return PROPERTIES.getStringProperty("label.apply");
+    }
+    
+    public static String getLabelCancel() {
+        return PROPERTIES.getStringProperty("label.cancel");
+    }
+    
+    public static String getLabelAuthType() {
+        return PROPERTIES.getStringProperty("label.auth.type");
+    }
+    
+    public static String getLabelProtocol() {
+        return PROPERTIES.getStringProperty("label.protocol");
+    }
+    
+    public static String getLabelHost() {
+        return PROPERTIES.getStringProperty("label.host");
+    }
+    
+    public static String getLabelPort() {
+        return PROPERTIES.getStringProperty("label.port");
+    }
+    
+    public static String getLabelCheckTasks() {
+        return PROPERTIES.getStringProperty("label.check.tasks.timeout");
+    }
+    
+    public static String getLabelPopupAutoclose() {
+        return PROPERTIES.getStringProperty("label.popup.autoclose.timeout");
+    }
+    
+    public static String getLabelUnreadTasks() {
+        return PROPERTIES.getStringProperty("label.unread.tasks.notification.timeout");
+    }
+    
+    public static String getLabelSoundEnabled() {
+        return PROPERTIES.getStringProperty("label.sounds.enabled");
+    }
+    
+    public static String getLabelLoginSilently() {
+        return PROPERTIES.getStringProperty("label.login.silently");
+    }
+    
+    public static String[] getAuthTypes() {
+        String authTypes = PROPERTIES.getStringProperty("authentication.all.types");
+        return authTypes.split(";");
+    }
 }

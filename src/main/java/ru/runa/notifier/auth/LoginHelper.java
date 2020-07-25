@@ -20,14 +20,11 @@ package ru.runa.notifier.auth;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.security.auth.login.Configuration;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
-
 import ru.runa.notifier.GUI;
 import ru.runa.notifier.util.ClassLoaderUtil;
 import ru.runa.notifier.util.ResourcesManager;
@@ -71,7 +68,7 @@ public class LoginHelper {
         if (!tryLogin) {
             return;
         }
-        String authType = ResourcesManager.getAuthenticationType();
+        String authType = GUI.setting.getAuthenticationType();
         Authenticator authenticator = ClassLoaderUtil.instantiate(authenticators.get(authType));
         while (user == null) {
             if (!tryLogin) {

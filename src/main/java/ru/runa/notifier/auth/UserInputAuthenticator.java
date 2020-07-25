@@ -2,12 +2,13 @@ package ru.runa.notifier.auth;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -16,16 +17,17 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
 import ru.runa.notifier.GUI;
 import ru.runa.notifier.WFEConnection;
 import ru.runa.notifier.util.ResourcesManager;
+import ru.runa.notifier.util.SettingDialog;
 import ru.runa.wfe.webservice.User;
 
 public class UserInputAuthenticator implements Authenticator {
+
     private static final Log log = LogFactory.getLog(UserInputAuthenticator.class);
 
     private String login = null;
@@ -34,10 +36,10 @@ public class UserInputAuthenticator implements Authenticator {
     @Override
     public User authenticate() throws Exception {
         try {
-            if (ResourcesManager.isLoginSilently()) {
+            if (GUI.setting.isLoginSilently()) {   
                 try {
-                    login = ResourcesManager.getDefaultLogin();
-                    password = ResourcesManager.getDefaultPassword();
+                    login = GUI.setting.getLogin();
+                    password = GUI.setting.getPassword();
                     return WFEConnection.getAuthenticationAPI().authenticateByLoginPassword(login, password);
                 } catch (Exception e) {
                     log.warn("Auth with default credentials failed, requesting", e);
@@ -89,6 +91,7 @@ public class UserInputAuthenticator implements Authenticator {
     }
 
     public class LoginDialog extends Dialog {
+
         private String[] returnValue = null;
         private Shell shell;
         private Text loginField;
@@ -121,17 +124,27 @@ public class UserInputAuthenticator implements Authenticator {
             passwordField = new Text(composite, SWT.BORDER | SWT.PASSWORD);
             passwordField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            Button buttonLogin = new Button(shell, SWT.PUSH);
-            buttonLogin.setText(ResourcesManager.getLoginMessage());
+            Link settingsLink = new Link(composite, SWT.NONE);
+            settingsLink.setText("<a>" + ResourcesManager.getLabelSetting() + "</a>");
+            
+            settingsLink.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    SettingDialog settingsDialog = new SettingDialog(shell);
+                    settingsDialog.open();
+                }
+            });
+
+            Button buttonLogin = new Button(composite, SWT.PUSH);
             GridData buttonData = new GridData(GridData.FILL_HORIZONTAL);
-            buttonData.widthHint = 100;
+            buttonData.widthHint = 120;
+            buttonData.heightHint = 36;
+
             buttonData.horizontalAlignment = GridData.END;
             buttonLogin.setLayoutData(buttonData);
-            buttonLogin.addListener(SWT.Selection, new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    harvestDataAndClose();
-                }
+            buttonLogin.setText(ResourcesManager.getLoginMessage());
+            buttonLogin.addListener(SWT.Selection, (Event event) -> {
+                harvestDataAndClose();
             });
 
             loginField.addKeyListener(new KeyListener() {
@@ -159,8 +172,8 @@ public class UserInputAuthenticator implements Authenticator {
                 }
             });
 
-            loginField.setText(ResourcesManager.getDefaultLogin());
-            passwordField.setText(ResourcesManager.getDefaultPassword());
+            loginField.setText(GUI.setting.getLogin());
+            passwordField.setText(GUI.setting.getPassword());
 
             loginField.setFocus();
 
@@ -178,7 +191,7 @@ public class UserInputAuthenticator implements Authenticator {
         }
 
         private void harvestDataAndClose() {
-            returnValue = new String[] { loginField.getText(), passwordField.getText() };
+            returnValue = new String[]{loginField.getText(), passwordField.getText()};
             shell.dispose();
         }
     }
