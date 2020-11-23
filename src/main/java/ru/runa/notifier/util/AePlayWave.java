@@ -11,6 +11,7 @@ import javax.sound.sampled.SourceDataLine;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ru.runa.notifier.GUI;
 
 public class AePlayWave extends Thread {
     private static final Log log = LogFactory.getLog(AePlayWave.class);
@@ -50,7 +51,7 @@ public class AePlayWave extends Thread {
     }
     
     public static void playNotification(String wavFile) {
-        if (ResourcesManager.isSoundsEnabled()) {
+        if (GUI.setting.isSoundsEnabled()) {
             new AePlayWave(wavFile).start();
         }
     }
