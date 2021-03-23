@@ -27,6 +27,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -39,7 +40,6 @@ import ru.runa.notifier.GUI;
 import ru.runa.notifier.util.ExtendedThread;
 import ru.runa.notifier.util.ImageManager;
 import ru.runa.notifier.util.LayoutsManager;
-import ru.runa.notifier.util.ResourcesManager;
 import ru.runa.notifier.util.WidgetsManager;
 
 /**
@@ -68,19 +68,25 @@ public class SystemTrayAlert {
     private Shell popupShell;
     private SystemTray systemTray;
     private CLabel contentLabel;
+    private String title;
+    private String content;
+    private Image contentImage;
 
-    private SystemTrayAlert(Display display, SystemTray systemTray) {
+    private SystemTrayAlert(Display display, SystemTray systemTray, String title, String content, Image contentImage) {
         this.display = display;
         this.systemTray = systemTray;
+        this.title = title;
+        this.content = content;
+        this.contentImage = contentImage;
         mouseInPopup = false;
         popupClosed = false;
         initResources();
         initComponents();
     }
 
-    public static SystemTrayAlert getInstance(Display display, SystemTray rssOwlSystemTray) {
+    public static SystemTrayAlert getInstance(Display display, SystemTray rssOwlSystemTray, String title, String content, Image contentImage) {
         if (instance == null) {
-            instance = new SystemTrayAlert(display, rssOwlSystemTray);
+            instance = new SystemTrayAlert(display, rssOwlSystemTray, title, content, contentImage);
         }
         return instance;
     }
@@ -90,7 +96,7 @@ public class SystemTrayAlert {
     }
 
     public void show(int tasksCount) {
-        contentLabel.setText(ResourcesManager.getTeasePopupText() + tasksCount);
+        contentLabel.setText(content + tasksCount);
         popupClosed = false;
         moveIn();
         startAutoCloseThread();
@@ -123,7 +129,7 @@ public class SystemTrayAlert {
         titleCircle.setLayout(LayoutsManager.createGridLayout(2, 0, 0));
 
         CLabel titleCircleLabel = new CLabel(titleCircle, SWT.NO_FOCUS);
-        titleCircleLabel.setText(ResourcesManager.getNewTasksPopupTitle());
+        titleCircleLabel.setText(title);
         titleCircleLabel.setFont(popupBoldFont);
         titleCircleLabel.setBackground(titleCircle.getBackground());
         titleCircleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -174,10 +180,10 @@ public class SystemTrayAlert {
         contentLabel = new CLabel(innerContentCircle, SWT.NO_FOCUS);
         contentLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         contentLabel.setBackground(titleCircle.getBackground());
-        contentLabel.setImage(ImageManager.iconTrayTease);
+        contentLabel.setImage(contentImage);
         contentLabel.setBackground(popupInnerCircleColor);
         contentLabel.setFont(popupBoldFont);
-        contentLabel.setText(ResourcesManager.getTeasePopupText() + 0);
+        contentLabel.setText(content + 0);
         contentLabel.setCursor(display.getSystemCursor(SWT.CURSOR_HAND));
         contentLabel.addMouseTrackListener(new MouseTrackAdapter() {
 

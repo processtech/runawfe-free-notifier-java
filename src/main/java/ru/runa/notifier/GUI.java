@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Shell;
 import ru.runa.notifier.auth.LoginHelper;
 import ru.runa.notifier.checker.TaskChecker;
 import ru.runa.notifier.tray.SystemTray;
+import ru.runa.notifier.tray.alert.TasksTrayAlert;
 import ru.runa.notifier.util.AePlayWave;
 import ru.runa.notifier.util.ImageManager;
 import ru.runa.notifier.util.ResourcesManager;
@@ -267,7 +268,7 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     }
 
     void showGui() {
-        systemTray = new SystemTray(display, shell);
+        systemTray = new SystemTray(display, shell, new TasksTrayAlert());
         systemTray.setViewChangeListener(this);
         AePlayWave.playNotification("/onAppStart.wav");
         startCheckForTasks();

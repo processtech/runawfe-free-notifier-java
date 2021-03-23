@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.TrayItem;
 import ru.runa.notifier.GUI;
 import ru.runa.notifier.auth.LoginHelper;
 import ru.runa.notifier.checker.TaskChecker;
+import ru.runa.notifier.tray.alert.TrayAlert;
 import ru.runa.notifier.util.ImageManager;
 import ru.runa.notifier.util.ResourcesManager;
 import ru.runa.notifier.util.WidgetsManager;
@@ -76,13 +77,16 @@ public class SystemTray implements PropertyChangeListener {
 	
 	boolean enableTray = ResourcesManager.getShowTray();
 
-	public SystemTray(Display display, Shell shell) {
+	private final TrayAlert trayAlert;
+
+	public SystemTray(Display display, Shell shell, TrayAlert trayAlert) {
 		this.display = display;
 		this.shell = shell;
+		this.trayAlert = trayAlert;
 		initComponents();
 		updateTray();
 
-		SystemTrayAlert.getInstance(display, this);
+		trayAlert.getInstance(display, this);
 	}
 
     public void setViewChangeListener(ViewChangeListener formClosedListener) {
@@ -197,7 +201,7 @@ public class SystemTray implements PropertyChangeListener {
 
 	private void showTrayPopup(int newTasksCount) {
 		if (enableTray && (trayPopup == null || trayPopup.isPopupClosed())) {
-			trayPopup = SystemTrayAlert.getInstance(display, this);
+			trayPopup = trayAlert.getInstance(display, this);
 			trayPopup.show(newTasksCount);
 		}
 	}
