@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import ru.runa.notifier.GUI;
 import ru.runa.notifier.auth.LoginHelper;
-import ru.runa.notifier.checker.TaskChecker;
+import ru.runa.notifier.checker.Checker;
 import ru.runa.notifier.tray.alert.TrayAlert;
 import ru.runa.notifier.util.ImageManager;
 import ru.runa.notifier.util.ResourcesManager;
@@ -73,7 +73,7 @@ public class SystemTray implements PropertyChangeListener {
 
     private ViewChangeListener viewChangeListener;
 
-	private int unreadTasksCount;
+	private long unreadCount;
 	
 	boolean enableTray = ResourcesManager.getShowTray();
 
@@ -92,10 +92,6 @@ public class SystemTray implements PropertyChangeListener {
     public void setViewChangeListener(ViewChangeListener formClosedListener) {
         this.viewChangeListener = formClosedListener;
     }
-
-	public void resetPopupTimeLock() {
-		popupTimeLock = 0;
-	}
 
 	protected void restoreWindow() {
 		if (trayPopup != null && !trayPopup.isPopupClosed()) {
@@ -118,8 +114,8 @@ public class SystemTray implements PropertyChangeListener {
 			return;
 		}
 
-		if (unreadTasksCount > 0) {
-			systemTrayItem.setToolTipText(ResourcesManager.getTooltipPopupTasksText() + unreadTasksCount);
+		if (unreadCount > 0) {
+			systemTrayItem.setToolTipText(trayAlert.getContent() + unreadCount);
 			if (systemTrayItem.getImage() != null) {
 				if (systemTrayItem.getImage() != ImageManager.iconTrayTasks) {
 					systemTrayItem.setImage(ImageManager.iconTrayTasks);
@@ -128,7 +124,7 @@ public class SystemTray implements PropertyChangeListener {
 				systemTrayItem.setImage(ImageManager.iconTrayTasks);
 			}
 		} else {
-			systemTrayItem.setToolTipText(ResourcesManager.getTooltipPopupNoTasksText());
+			systemTrayItem.setToolTipText(trayAlert.getContent());
 			if (systemTrayItem.getImage() != null) {
 				if (systemTrayItem.getImage() != ImageManager.iconTrayNoTasks) {
 					systemTrayItem.setImage(ImageManager.iconTrayNoTasks);
@@ -139,13 +135,13 @@ public class SystemTray implements PropertyChangeListener {
 		}
 	}
 
-	public void setTasks(int unreadTasksCount, int newTasksCount) {
-		boolean teasing = (newTasksCount > 0);
-		this.unreadTasksCount = unreadTasksCount;
+	public void setTasks(long unreadCount, long newCount) {
+		boolean teasing = (newCount > 0);
+		this.unreadCount = unreadCount;
 		if (teasing) {
 			long curTimeMillis = System.currentTimeMillis();
 			if (trayIsTeasing != teasing || curTimeMillis - popupTimeLock > MIN_POPUP_GAP) {
-				showTrayPopup(newTasksCount);
+				showTrayPopup(newCount);
 				popupTimeLock = curTimeMillis;
 			}
 		}
@@ -199,18 +195,18 @@ public class SystemTray implements PropertyChangeListener {
 		});
 	}
 
-	private void showTrayPopup(int newTasksCount) {
+	private void showTrayPopup(long count) {
 		if (enableTray && (trayPopup == null || trayPopup.isPopupClosed())) {
 			trayPopup = trayAlert.getInstance(display, this);
-			trayPopup.show(newTasksCount);
+			trayPopup.show(count);
 		}
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propertyName = evt.getPropertyName();
-		if (TaskChecker.ERROR_OCCURED_PROPERTY.equals(propertyName)) {
-			boolean oldValue = ((Boolean) evt.getOldValue()).booleanValue();
-			boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
+		if (Checker.ERROR_OCCURRED_PROPERTY.equals(propertyName)) {
+			boolean oldValue = (Boolean) evt.getOldValue();
+			boolean newValue = (Boolean) evt.getNewValue();
 			if (!oldValue && newValue) {
 				systemTrayItem.setToolTipText(ResourcesManager.getTooltipPopupErrorText());
 				if (systemTrayItem.getImage() != null) {

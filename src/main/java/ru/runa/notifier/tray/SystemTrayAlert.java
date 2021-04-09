@@ -70,14 +70,14 @@ public class SystemTrayAlert {
     private CLabel contentLabel;
     private String title;
     private String content;
-    private Image contentImage;
+    private Image image;
 
-    private SystemTrayAlert(Display display, SystemTray systemTray, String title, String content, Image contentImage) {
+    private SystemTrayAlert(Display display, SystemTray systemTray, String title, String content, Image image) {
         this.display = display;
         this.systemTray = systemTray;
         this.title = title;
         this.content = content;
-        this.contentImage = contentImage;
+        this.image = image;
         mouseInPopup = false;
         popupClosed = false;
         initResources();
@@ -95,8 +95,8 @@ public class SystemTrayAlert {
         return popupClosed;
     }
 
-    public void show(int tasksCount) {
-        contentLabel.setText(content + tasksCount);
+    public void show(long count) {
+        contentLabel.setText(content + count);
         popupClosed = false;
         moveIn();
         startAutoCloseThread();
@@ -180,7 +180,7 @@ public class SystemTrayAlert {
         contentLabel = new CLabel(innerContentCircle, SWT.NO_FOCUS);
         contentLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         contentLabel.setBackground(titleCircle.getBackground());
-        contentLabel.setImage(contentImage);
+        contentLabel.setImage(image);
         contentLabel.setBackground(popupInnerCircleColor);
         contentLabel.setFont(popupBoldFont);
         contentLabel.setText(content + 0);
