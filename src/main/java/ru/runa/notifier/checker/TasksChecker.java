@@ -10,20 +10,23 @@ import ru.runa.wfe.webservice.WfTask;
 import java.util.List;
 import java.util.Map;
 
-public class TaskChecker extends Checker {
+public class TasksChecker extends Checker {
     private final Map<Long, WfTask> existingTasks = Maps.newHashMap();
-    private long unreadTasksCount = 0;
-    private long newTasksCount = 0;
 
-    public TaskChecker(SystemTray systemTray) {
+    public TasksChecker(SystemTray systemTray) {
         super(systemTray, ResourcesManager.getOnNewTaskTriggerCommand());
+    }
+
+    @Override
+    public void start() {
+        super.start(GUI.setting.getCheckTasksTimeout(), GUI.setting.getUnreadTasksNotificationTimeout());
     }
 
     @Override
     void setCounts() {
         List<WfTask> tasks = WFEConnection.getTaskAPI().getMyTasks(LoginHelper.getUser(), null);
-        unreadTasksCount = getUnreadTasksCount(tasks);
-        newTasksCount = getNewTasksCount(tasks);
+        unreadCount = getUnreadTasksCount(tasks);
+        newCount = getNewTasksCount(tasks);
         existingTasks.clear();
         for (WfTask task : tasks) {
             existingTasks.put(task.getId(), task);
@@ -48,19 +51,5 @@ public class TaskChecker extends Checker {
             }
         }
         return result;
-    }
-
-    @Override
-    long getUnreadCount() {
-        return unreadTasksCount;
-    }
-
-    @Override
-    long getNewCount() {
-        return newTasksCount;
-    }
-
-    public void start() {
-        super.start(GUI.setting.getCheckTasksTimeout(), GUI.setting.getUnreadTasksNotificationTimeout());
     }
 }

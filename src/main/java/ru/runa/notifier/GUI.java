@@ -20,14 +20,11 @@ package ru.runa.notifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.GridData;
@@ -35,12 +32,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-
 import ru.runa.notifier.auth.LoginHelper;
-import ru.runa.notifier.checker.TaskChecker;
+import ru.runa.notifier.checker.Checker;
+import ru.runa.notifier.checker.MessagesChecker;
+import ru.runa.notifier.checker.TasksChecker;
 import ru.runa.notifier.tray.SystemTray;
+import ru.runa.notifier.tray.alert.MessagesTrayAlert;
 import ru.runa.notifier.tray.alert.TasksTrayAlert;
 import ru.runa.notifier.util.AePlayWave;
 import ru.runa.notifier.util.ImageManager;
@@ -63,9 +61,8 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
 
     public static Shell shell;
 
-    private SystemTray systemTray;
-
-    private TaskChecker tasksChecker;
+    private TasksChecker tasksChecker;
+    private MessagesChecker messagesChecker;
 
     private static BrowserView browserView;
 
@@ -82,31 +79,19 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
         return (!display.isDisposed() && !shell.isDisposed());
     }
 
-    private void startCheckForTasks() {
-        tasksChecker = new TaskChecker(systemTray);
-        tasksChecker.addPropertyChangeListener(this);
-        tasksChecker.addPropertyChangeListener(systemTray);
-        tasksChecker.start();
+    private void startChecking(Checker checker, SystemTray systemTray) {
+        systemTray.setViewChangeListener(this);
+        checker.addPropertyChangeListener(this);
+        checker.addPropertyChangeListener(systemTray);
+        checker.start();
     }
 
     private void initComponents() {
         shell = new Shell(display);
         shell.setText(ResourcesManager.getApplicationName());
         shell.setImage(ImageManager.iconApplication);
-        shell.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent event) {
-                onDispose();
-            }
-        });
-
-        shell.addListener(SWT.Close, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                onClose(event);
-            }
-        });
-
+        shell.addDisposeListener(event -> onDispose());
+        shell.addListener(SWT.Close, this::onClose);
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellIconified(ShellEvent event) {
@@ -268,10 +253,15 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     }
 
     void showGui() {
-        systemTray = new SystemTray(display, shell, new TasksTrayAlert());
-        systemTray.setViewChangeListener(this);
         AePlayWave.playNotification("/onAppStart.wav");
-        startCheckForTasks();
+        LoginHelper.login();
+        SystemTray tasksTray = new SystemTray(display, shell, new TasksTrayAlert());
+        tasksChecker = new TasksChecker(tasksTray);
+        startChecking(tasksChecker, tasksTray);
+
+        SystemTray messagesTray = new SystemTray(display, shell, new MessagesTrayAlert());
+        messagesChecker = new MessagesChecker(messagesTray);
+        startChecking(messagesChecker, messagesTray);
         runEventLoop();
     }
 
@@ -281,6 +271,9 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
         LoginHelper.setLoginEnable(false);
         if (tasksChecker != null) {
             tasksChecker.stop();
+        }
+        if (messagesChecker != null) {
+            messagesChecker.stop();
         }
     }
 

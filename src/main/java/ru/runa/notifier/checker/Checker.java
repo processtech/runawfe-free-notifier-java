@@ -38,6 +38,8 @@ public abstract class Checker {
         this.onNewEventTriggerCommand = onNewEventTriggerCommand;
     }
 
+    public abstract void start();
+
     public void start(int checkTimeout, int notificationTimeout) {
         checkTimer = new Timer();
         checkTimer.schedule(countChecker, 0, checkTimeout);
@@ -76,9 +78,9 @@ public abstract class Checker {
         listeners.firePropertyChange(propName, old, newValue);
     }
 
+    protected long unreadCount = 0;
+    protected long newCount = 0;
     abstract void setCounts();
-    abstract long getUnreadCount();
-    abstract long getNewCount();
 
     private class CountChecker extends TimerTask {
         protected SystemTray systemTray;
@@ -102,14 +104,9 @@ public abstract class Checker {
                 if (LoginHelper.isLogged()) {
                     errorCount = 0;
                     setCounts();
-                    final long unreadCount = getUnreadCount();
-                    final long newCount = getNewCount();
-                    GUI.display.syncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            setErrorOccurred(false);
-                            systemTray.setTasks(unreadCount, newCount);
-                        }
+                    GUI.display.syncExec(() -> {
+                        setErrorOccurred(false);
+                        systemTray.setTasks(unreadCount, newCount);
                     });
                     if (newCount > 0) {
                         AePlayWave.playNotification("/onNewTask.wav");
@@ -129,12 +126,7 @@ public abstract class Checker {
             } catch (Throwable e) {
                 log.warn("run (Unforeseen Exception)", e);
                 if (++errorCount > 10) {
-                    GUI.display.syncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            setErrorOccurred(true);
-                        }
-                    });
+                    GUI.display.syncExec(() -> setErrorOccurred(true));
                 }
             }
         }

@@ -20,8 +20,6 @@ package ru.runa.notifier.tray;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
@@ -35,7 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
-
 import ru.runa.notifier.GUI;
 import ru.runa.notifier.util.ExtendedThread;
 import ru.runa.notifier.util.ImageManager;
@@ -55,8 +52,6 @@ public class SystemTrayAlert {
 
     private static final int ANIMATION_STEPS = 35;
 
-    private static SystemTrayAlert instance = null;
-
     private ExtendedThread autoClosePopup;
     private Display display;
     private boolean mouseInPopup;
@@ -68,27 +63,28 @@ public class SystemTrayAlert {
     private Shell popupShell;
     private SystemTray systemTray;
     private CLabel contentLabel;
-    private String title;
-    private String content;
-    private Image image;
+    private final String title;
+    private final String content;
+    private final Image image;
+    private final boolean isLeftAlign;
 
-    private SystemTrayAlert(Display display, SystemTray systemTray, String title, String content, Image image) {
+    private SystemTrayAlert(Display display, SystemTray systemTray,
+                            String title, String content, Image image, boolean isLeftAlign) {
         this.display = display;
         this.systemTray = systemTray;
         this.title = title;
         this.content = content;
         this.image = image;
+        this.isLeftAlign = isLeftAlign;
         mouseInPopup = false;
         popupClosed = false;
         initResources();
         initComponents();
     }
 
-    public static SystemTrayAlert getInstance(Display display, SystemTray rssOwlSystemTray, String title, String content, Image contentImage) {
-        if (instance == null) {
-            instance = new SystemTrayAlert(display, rssOwlSystemTray, title, content, contentImage);
-        }
-        return instance;
+    public static SystemTrayAlert getInstance(Display display, SystemTray rssOwlSystemTray,
+                                              String title, String content, Image image, boolean isLeftAlign) {
+        return new SystemTrayAlert(display, rssOwlSystemTray, title, content, image, isLeftAlign);
     }
 
     public boolean isPopupClosed() {
@@ -111,12 +107,7 @@ public class SystemTrayAlert {
         popupShell = new Shell(display, SWT.ON_TOP | SWT.NO_FOCUS);
         popupShell.setBackground(popupBorderColor);
         popupShell.setLayout(LayoutsManager.createGridLayout(1, 1, 1));
-        popupShell.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                onDispose();
-            }
-        });
+        popupShell.addDisposeListener(e -> onDispose());
 
         Composite outerCircle = new Composite(popupShell, SWT.NO_FOCUS);
         outerCircle.setBackground(popupOuterCircleColor);
@@ -233,6 +224,10 @@ public class SystemTrayAlert {
             popupShell.setVisible(true);
         }
 
+        if (isLeftAlign) {
+            popupShell.setLocation(clArea.x, yPos);
+            return;
+        }
         Thread animator = new Thread() {
             @Override
             public void run() {

@@ -19,4 +19,9 @@ public class MessagesTrayAlert extends TrayAlert {
     public Image getImage() {
         return ImageManager.iconApplication;
     }
+
+    @Override
+    public boolean isLeftAlign() {
+        return true;
+    }
 }

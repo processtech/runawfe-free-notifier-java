@@ -10,7 +10,7 @@ public abstract class TrayAlert {
 
     public SystemTrayAlert getInstance(Display display, SystemTray systemTray) {
         if (alert == null) {
-            alert = SystemTrayAlert.getInstance(display, systemTray, getTitle(), getContent(), getImage());
+            alert = SystemTrayAlert.getInstance(display, systemTray, getTitle(), getContent(), getImage(), isLeftAlign());
         }
         return alert;
     }
@@ -18,4 +18,5 @@ public abstract class TrayAlert {
     public abstract String getTitle();
     public abstract String getContent();
     public abstract Image getImage();
+    public abstract boolean isLeftAlign();
 }

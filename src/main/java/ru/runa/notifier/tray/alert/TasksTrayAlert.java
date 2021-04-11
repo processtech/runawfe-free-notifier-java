@@ -19,4 +19,9 @@ public class TasksTrayAlert extends TrayAlert {
     public Image getImage() {
         return ImageManager.iconTrayTease;
     }
+
+    @Override
+    public boolean isLeftAlign() {
+        return false;
+    }
 }
