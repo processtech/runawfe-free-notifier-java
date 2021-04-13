@@ -4,11 +4,10 @@ import ru.runa.notifier.GUI;
 import ru.runa.notifier.WFEConnection;
 import ru.runa.notifier.auth.LoginHelper;
 import ru.runa.notifier.tray.SystemTray;
-import ru.runa.notifier.util.ResourcesManager;
 
 public class MessagesChecker extends Checker {
     public MessagesChecker(SystemTray systemTray) {
-        super(systemTray, ResourcesManager.getOnNewTaskTriggerCommand());
+        super(systemTray, null);
     }
 
     @Override
