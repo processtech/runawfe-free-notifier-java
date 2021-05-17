@@ -15,6 +15,10 @@ public abstract class TrayAlert {
         return alert;
     }
 
+    public String getStartPageUrl() {
+        return null;
+    }
+
     public abstract String getTitle();
     public abstract String getContent();
     public abstract Image getImage();

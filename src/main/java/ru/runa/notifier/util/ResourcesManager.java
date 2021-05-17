@@ -119,6 +119,10 @@ public class ResourcesManager {
         return PROPERTIES.getStringProperty("login.relative.url");
     }
 
+    public static String getChatsRelativeUrl() {
+        return PROPERTIES.getStringProperty("chats.relative.url");
+    }
+
     public static boolean getShowTray() {
         return PROPERTIES.getBooleanProperty("show.tray", true);
     }

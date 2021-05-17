@@ -97,7 +97,7 @@ public class SystemTray implements PropertyChangeListener {
 		if (trayPopup != null && !trayPopup.isPopupClosed()) {
             trayPopup.hide();
         }
-        viewChangeListener.showBrowserView();
+        viewChangeListener.showBrowserView(trayAlert.getStartPageUrl());
 		GUI.restoreWindow();
 	}
 

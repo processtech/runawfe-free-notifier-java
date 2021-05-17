@@ -122,7 +122,7 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
         return changeUrl;
     }
 
-    public void openStartPage() {
+    public void openStartPage(String startPageUrl) {
         if (isChangeUrl()) {
             String targetUrl;
             Setting.SETTING.getUrl();
@@ -131,6 +131,10 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
                 targetUrl = serverUrl + ResourcesManager.getLoginRelativeUrl();
             } else {
                 targetUrl = serverUrl + ResourcesManager.getLoginRelativeUrl() + "?" + LoginHelper.getWebParameters();
+            }
+            if (startPageUrl != null) {
+                targetUrl += (LoginHelper.getWebParameters() == null || LoginHelper.getWebParameters().length() == 0) ? "?" : "&";
+                targetUrl += "forwardUrl=" + startPageUrl;
             }
             browserView.getBrowser().setUrl(targetUrl);
         }
@@ -143,9 +147,9 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     }
 
     @Override
-    public void showBrowserView() {
+    public void showBrowserView(String startPageUrl) {
         initBrowserView();
-        openStartPage();
+        openStartPage(startPageUrl);
         maximazeControl(browserView);
         shell.layout(true, true);
     }
