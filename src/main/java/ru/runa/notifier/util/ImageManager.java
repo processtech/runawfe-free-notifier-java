@@ -39,6 +39,8 @@ public class ImageManager {
 
     public static Image iconTrayTasks;
 
+    public static Image iconTrayMessages;
+
     public static Image iconTrayNotLogged;
 
     public static Image iconTrayError;
@@ -49,16 +51,14 @@ public class ImageManager {
 
     public static Image iconTrayCloseOver;
 
-    public static Image iconTrayTease;
-
     public static Image imageSplash;
 
     public static void disposeIcons() {
         iconTrayTasks.dispose();
+        iconTrayMessages.dispose();
         iconApplication.dispose();
         iconTrayClose.dispose();
         iconTrayCloseOver.dispose();
-        iconTrayTease.dispose();
         iconTrayNoTasks.dispose();
         iconTrayNotLogged.dispose();
         imageSplash.dispose();
@@ -66,10 +66,10 @@ public class ImageManager {
 
     public static void initIcons() {
         iconTrayTasks = loadImage("/img/tasks.gif");
+        iconTrayMessages = loadImage("/img/messages.png");
         iconApplication = loadImage("/img/application.gif");
         iconTrayClose = loadImage("/img/tray_close.gif");
         iconTrayCloseOver = loadImage("/img/tray_close_over.gif");
-        iconTrayTease = loadImage("/img/tray_tease.gif");
         iconTrayNoTasks = loadImage("/img/tray.gif");
         iconTrayNotLogged = loadImage("/img/tray_not_logged.gif");
         iconTrayError = loadImage("/img/tray_error.gif");

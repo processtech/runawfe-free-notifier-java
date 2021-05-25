@@ -22,7 +22,7 @@ public class MessagesTrayAlert extends TrayAlert {
 
     @Override
     public Image getImage() {
-        return ImageManager.iconApplication;
+        return ImageManager.iconTrayMessages;
     }
 
     @Override

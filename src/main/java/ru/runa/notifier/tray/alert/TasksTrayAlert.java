@@ -17,7 +17,7 @@ public class TasksTrayAlert extends TrayAlert {
 
     @Override
     public Image getImage() {
-        return ImageManager.iconTrayTease;
+        return ImageManager.iconTrayTasks;
     }
 
     @Override

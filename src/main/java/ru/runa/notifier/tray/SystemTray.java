@@ -77,12 +77,15 @@ public class SystemTray implements PropertyChangeListener {
 	
 	boolean enableTray = ResourcesManager.getShowTray();
 
+	private final boolean showTrayItem;
+
 	private final TrayAlert trayAlert;
 
-	public SystemTray(Display display, Shell shell, TrayAlert trayAlert) {
+	public SystemTray(Display display, Shell shell, TrayAlert trayAlert, boolean showTrayItem) {
 		this.display = display;
 		this.shell = shell;
 		this.trayAlert = trayAlert;
+		this.showTrayItem = showTrayItem;
 		initComponents();
 		updateTray();
 
@@ -117,11 +120,11 @@ public class SystemTray implements PropertyChangeListener {
 		if (unreadCount > 0) {
 			systemTrayItem.setToolTipText(trayAlert.getContent() + unreadCount);
 			if (systemTrayItem.getImage() != null) {
-				if (systemTrayItem.getImage() != ImageManager.iconTrayTasks) {
-					systemTrayItem.setImage(ImageManager.iconTrayTasks);
+				if (systemTrayItem.getImage() != trayAlert.getImage()) {
+					systemTrayItem.setImage(trayAlert.getImage());
 				}
 			} else {
-				systemTrayItem.setImage(ImageManager.iconTrayTasks);
+				systemTrayItem.setImage(trayAlert.getImage());
 			}
 		} else {
 			systemTrayItem.setToolTipText(trayAlert.getContent());
@@ -152,7 +155,7 @@ public class SystemTray implements PropertyChangeListener {
 	private void initComponents() {
 		systemTray = display.getSystemTray();
 		systemTrayItem = new TrayItem(systemTray, SWT.NONE);
-		systemTrayItem.setVisible(enableTray);
+		systemTrayItem.setVisible(showTrayItem);
 
 		systemTrayItem.addListener(SWT.MenuDetect, new Listener() {
 			public void handleEvent(Event event) {

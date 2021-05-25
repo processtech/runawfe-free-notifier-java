@@ -259,11 +259,11 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     void showGui() {
         AePlayWave.playNotification("/onAppStart.wav");
         LoginHelper.login();
-        SystemTray tasksTray = new SystemTray(display, shell, new TasksTrayAlert());
+        SystemTray tasksTray = new SystemTray(display, shell, new TasksTrayAlert(), ResourcesManager.getShowTray());
         tasksChecker = new TasksChecker(tasksTray);
         startChecking(tasksChecker, tasksTray);
 
-        SystemTray messagesTray = new SystemTray(display, shell, new MessagesTrayAlert());
+        SystemTray messagesTray = new SystemTray(display, shell, new MessagesTrayAlert(), false);
         messagesChecker = new MessagesChecker(messagesTray);
         startChecking(messagesChecker, messagesTray);
         runEventLoop();
