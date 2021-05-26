@@ -66,16 +66,16 @@ public class SystemTrayAlert {
     private final String title;
     private final String content;
     private final Image image;
-    private final boolean isLeftAlign;
+    private final boolean isAtTheBottom;
 
     private SystemTrayAlert(Display display, SystemTray systemTray,
-                            String title, String content, Image image, boolean isLeftAlign) {
+                            String title, String content, Image image, boolean isAtTheBottom) {
         this.display = display;
         this.systemTray = systemTray;
         this.title = title;
         this.content = content;
         this.image = image;
-        this.isLeftAlign = isLeftAlign;
+        this.isAtTheBottom = isAtTheBottom;
         mouseInPopup = false;
         popupClosed = false;
         initResources();
@@ -83,8 +83,8 @@ public class SystemTrayAlert {
     }
 
     public static SystemTrayAlert getInstance(Display display, SystemTray rssOwlSystemTray,
-                                              String title, String content, Image image, boolean isLeftAlign) {
-        return new SystemTrayAlert(display, rssOwlSystemTray, title, content, image, isLeftAlign);
+                                              String title, String content, Image image, boolean isAtTheBottom) {
+        return new SystemTrayAlert(display, rssOwlSystemTray, title, content, image, isAtTheBottom);
     }
 
     public boolean isPopupClosed() {
@@ -215,7 +215,7 @@ public class SystemTrayAlert {
         final Point shellSize = popupShell.getSize();
         final int maxX = clArea.width + clArea.x;
         final int minX = maxX - shellSize.x;
-        final int yPos = clArea.height + clArea.y - shellSize.y;
+        final int yPos = clArea.height + clArea.y - shellSize.y - (isAtTheBottom ? 0 : shellSize.y);
         final int pixelPerStep = shellSize.x / ANIMATION_STEPS;
 
         popupShell.setLocation(maxX, yPos);
@@ -224,10 +224,6 @@ public class SystemTrayAlert {
             popupShell.setVisible(true);
         }
 
-        if (isLeftAlign) {
-            popupShell.setLocation(clArea.x, yPos);
-            return;
-        }
         Thread animator = new Thread() {
             @Override
             public void run() {

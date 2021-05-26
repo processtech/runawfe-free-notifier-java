@@ -26,7 +26,7 @@ public class MessagesTrayAlert extends TrayAlert {
     }
 
     @Override
-    public boolean isLeftAlign() {
+    public boolean isAtTheBottom() {
         return true;
     }
 }

@@ -21,7 +21,7 @@ public class TasksTrayAlert extends TrayAlert {
     }
 
     @Override
-    public boolean isLeftAlign() {
+    public boolean isAtTheBottom() {
         return false;
     }
 }
