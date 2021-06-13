@@ -1,5 +1,6 @@
 package ru.runa.notifier.util;
 
+import com.google.common.base.Strings;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -119,7 +120,7 @@ public class Setting {
     }
 
     public String getUrl() {
-        return protocol + "://" + host + ":" + port;
+        return protocol + "://" + host + (Strings.isNullOrEmpty(port) ? "" : ":" + port);
     }
 
     public String getProtocol() {
@@ -225,7 +226,7 @@ public class Setting {
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("User-Agent", "Runa Task Notifier");
                 setProtocol(url.getProtocol());
-                setPort(url.getPort() == -1 ? "80" : Integer.toString(url.getPort()));
+                setPort(url.getPort() == -1 ? "" : Integer.toString(url.getPort()));
                 setHost(url.getHost());
                 return connection.getResponseCode();
             } catch (IOException e) {
