@@ -29,6 +29,10 @@ public class ResourcesManager {
         return PROPERTIES.getStringProperty("popup.tease");
     }
 
+    public static String getNewMessagesPopupText() {
+        return PROPERTIES.getStringProperty("popup.messages.text");
+    }
+
     public static String getTooltipPopupTasksText() {
         return PROPERTIES.getStringProperty("popup.tasks");
     }
@@ -47,6 +51,10 @@ public class ResourcesManager {
 
     public static String getNewTasksPopupTitle() {
         return PROPERTIES.getStringProperty("popup.newtasks");
+    }
+
+    public static String getNewMessagesPopupTitle() {
+        return PROPERTIES.getStringProperty("popup.messages.title");
     }
 
     public static String getUserName() {
@@ -87,6 +95,10 @@ public class ResourcesManager {
 
     public static String getLoginRelativeUrl() {
         return PROPERTIES.getStringProperty("login.relative.url");
+    }
+
+    public static String getChatsRelativeUrl() {
+        return PROPERTIES.getStringProperty("chats.relative.url");
     }
 
     public static boolean getShowTray() {

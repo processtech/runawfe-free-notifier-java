@@ -9,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import ru.runa.notifier.util.ResourcesManager;
 import ru.runa.wfe.webservice.AuthenticationAPI;
 import ru.runa.wfe.webservice.AuthenticationWebService;
+import ru.runa.wfe.webservice.ChatAPI;
+import ru.runa.wfe.webservice.ChatWebService;
 import ru.runa.wfe.webservice.TaskAPI;
 import ru.runa.wfe.webservice.TaskWebService;
 
@@ -32,5 +34,9 @@ public class WFEConnection {
 
     public static TaskAPI getTaskAPI() {
         return new TaskWebService(getUrl("Task")).getTaskAPIPort();
+    }
+
+    public static ChatAPI getChatAPI() {
+        return new ChatWebService(getUrl("Chat")).getChatAPIPort();
     }
 }

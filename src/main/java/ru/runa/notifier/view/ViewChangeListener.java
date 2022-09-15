@@ -6,6 +6,6 @@ public interface ViewChangeListener extends EventListener {
 
     void showInfoPathFormView();
     
-    void showBrowserView();
+    void showBrowserView(String startPageUrl);
     
 }
