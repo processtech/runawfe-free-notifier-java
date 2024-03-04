@@ -1,25 +1,30 @@
 /*
  * This file is part of the RUNA WFE project.
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation; version 2.1 
- * of the License. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU Lesser General Public License for more details. 
- * 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with this program; if not, write to the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; version 2.1
+ * of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package ru.runa.notifier;
 
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
@@ -49,7 +54,7 @@ import ru.runa.notifier.view.ViewChangeListener;
 
 /**
  * Created on 2006
- * 
+ *
  * @author Gritsenko_S
  */
 public class GUI implements PropertyChangeListener, ViewChangeListener, LocationListener {
@@ -66,8 +71,8 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
 
     private static BrowserView browserView;
 
-    public static final Setting setting = Setting.SETTING; 
-    
+    public static final Setting setting = Setting.SETTING;
+
     public GUI(Display display, Shell splashShell) {
         GUI.display = display;
         setting.read();
@@ -112,14 +117,21 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     }
 
     public boolean isChangeUrl() {
-        String url = browserView.getBrowser().getUrl();
-        boolean changeUrl = true;
-        if (url != null && url.length() > 0) {
-            if (!url.contains("manage_tasks.do") && !ABOUT_BLANK.equals(url)) {
-                changeUrl = false;
-            }
-        }
-        return changeUrl;
+       return Optional.ofNullable(browserView)
+            .stream()
+            .map(bw -> {
+                String url = browserView.getBrowser().getUrl();
+                boolean changeUrl = true;
+                if (url != null && url.length() > 0) {
+                    if (!url.contains("manage_tasks.do") && !ABOUT_BLANK.equals(url)) {
+                        changeUrl = false;
+                    }
+                }
+                return changeUrl;
+            })
+            .findAny()
+            .orElse(true);
+
     }
 
     public void openStartPage(String startPageUrl) {
@@ -136,13 +148,20 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
                 targetUrl += (LoginHelper.getWebParameters() == null || LoginHelper.getWebParameters().length() == 0) ? "?" : "&";
                 targetUrl += "forwardUrl=" + startPageUrl;
             }
-            browserView.getBrowser().setUrl(targetUrl);
+            openUrl(targetUrl);
         }
+    }
+
+    private void openUrl(String url) {
+        Optional
+            .ofNullable(browserView)
+            .ifPresentOrElse(bw -> browserView.getBrowser().setUrl(url), () -> openInExternalBrowser(url));
+
     }
 
     public void openBlankPage() {
         if (isChangeUrl()) {
-            browserView.getBrowser().setUrl(ABOUT_BLANK);
+            openUrl(ABOUT_BLANK);
         }
     }
 
@@ -150,24 +169,30 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     public void showBrowserView(String startPageUrl) {
         initBrowserView();
         openStartPage(startPageUrl);
-        maximazeControl(browserView);
-        shell.layout(true, true);
+        Optional.ofNullable(browserView).ifPresent(bw -> {
+            maximazeControl(browserView);
+            shell.layout(true, true);
+        });
     }
 
     @Override
     public void showInfoPathFormView() {
         openBlankPage();
-        minimazeControl(browserView);
-        shell.layout(true, true);
+        Optional.ofNullable(browserView).ifPresent(bw -> {
+            minimazeControl(browserView);
+            shell.layout(true, true);
+        });
     }
 
     private void initBrowserView() {
-        if (browserView == null) {
-            browserView = new BrowserView(shell, SWT.FILL);
-            browserView.getBrowser().addLocationListener(this);
-            browserView.setLayoutData(new GridData());
+        if (!Setting.SETTING.isUseExternalBrowser()) {
+            if (browserView == null) {
+                browserView = new BrowserView(shell, SWT.FILL);
+                browserView.getBrowser().addLocationListener(this);
+                browserView.setLayoutData(new GridData());
+            }
+            browserView.getBrowser().setVisible(true);
         }
-        browserView.getBrowser().setVisible(true);
     }
 
     private void maximazeControl(Control control) {
@@ -279,6 +304,18 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
         if (messagesChecker != null) {
             messagesChecker.stop();
         }
+    }
+
+
+
+    private void openInExternalBrowser(String url) {
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.browse(URI.create(url));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

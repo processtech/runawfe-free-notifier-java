@@ -1,18 +1,18 @@
 /*
  * This file is part of the RUNA WFE project.
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation; version 2.1 
- * of the License. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU Lesser General Public License for more details. 
- * 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with this program; if not, write to the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; version 2.1
+ * of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
@@ -21,6 +21,7 @@ package ru.runa.notifier.tray;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import java.util.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,14 +38,12 @@ import ru.runa.notifier.GUI;
 import ru.runa.notifier.auth.LoginHelper;
 import ru.runa.notifier.checker.Checker;
 import ru.runa.notifier.tray.alert.TrayAlert;
-import ru.runa.notifier.util.ImageManager;
-import ru.runa.notifier.util.ResourcesManager;
-import ru.runa.notifier.util.WidgetsManager;
+import ru.runa.notifier.util.*;
 import ru.runa.notifier.view.ViewChangeListener;
 
 /**
  * Created on 2006
- * 
+ *
  * @author Gritsenko_S
  */
 public class SystemTray implements PropertyChangeListener {
@@ -74,7 +73,7 @@ public class SystemTray implements PropertyChangeListener {
     private ViewChangeListener viewChangeListener;
 
 	private long unreadCount;
-	
+
 	boolean enableTray = ResourcesManager.getShowTray();
 
 	private final boolean showTrayItem;
@@ -101,7 +100,9 @@ public class SystemTray implements PropertyChangeListener {
             trayPopup.hide();
         }
         viewChangeListener.showBrowserView(trayAlert.getStartPageUrl());
-		GUI.restoreWindow();
+		if (!Setting.SETTING.isUseExternalBrowser()) {
+			GUI.restoreWindow();
+		}
 	}
 
 	private void updateTray() {

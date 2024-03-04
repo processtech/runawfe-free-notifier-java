@@ -43,7 +43,9 @@ public class Setting {
     private Boolean isSoundsEnabled = ResourcesManager.isSoundsEnabled();
 
     private Integer unreadTasksNotificationTimeout = ResourcesManager.getUnreadTasksNotificationTimeout();
-    
+
+    private Boolean useExternalBrowser = ResourcesManager.useExternalBrowser();
+
     public void read() {
 
         final String srcProperties = System.getProperty("user.home") + "/config.properties";
@@ -215,6 +217,10 @@ public class Setting {
         return new ConnectionHelper().getConnection();
     }
 
+    public Boolean isUseExternalBrowser() {
+        return useExternalBrowser;
+    }
+
     private class ConnectionHelper {
 
         private HttpURLConnection connection = null;
@@ -239,7 +245,7 @@ public class Setting {
 
             protocol = protocol.equals("auto") ? "https" : protocol;
             String versionUrl = getUrl() + "/wfe/version";
-            
+
             if (setConnection(versionUrl) == HttpURLConnection.HTTP_MOVED_PERM) {
                 setConnection(connection.getHeaderField("Location"));
             }
