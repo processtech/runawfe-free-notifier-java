@@ -241,4 +241,8 @@ public class ResourcesManager {
         String authTypes = PROPERTIES.getStringProperty("authentication.all.types");
         return authTypes.split(";");
     }
+
+    public static boolean useExternalBrowser() {
+        return PROPERTIES.getBooleanProperty("use.external.browser", true);
+    }
 }
