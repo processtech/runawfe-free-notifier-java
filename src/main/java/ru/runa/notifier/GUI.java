@@ -1,12 +1,11 @@
 package ru.runa.notifier;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
-import java.util.function.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
@@ -94,21 +93,17 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     }
 
     public boolean isChangeUrl() {
-       return Optional.ofNullable(browserView)
-            .stream()
-            .map(bw -> {
-                String url = browserView.getBrowser().getUrl();
-                boolean changeUrl = true;
-                if (url != null && url.length() > 0) {
-                    if (!url.contains("manage_tasks.do") && !ABOUT_BLANK.equals(url)) {
-                        changeUrl = false;
-                    }
+        if (browserView != null) {
+            String url = browserView.getBrowser().getUrl();
+            boolean changeUrl = true;
+            if (url != null && url.length() > 0) {
+                if (!url.contains("manage_tasks.do") && !ABOUT_BLANK.equals(url)) {
+                    changeUrl = false;
                 }
-                return changeUrl;
-            })
-            .findAny()
-            .orElse(true);
-
+            }
+            return changeUrl;
+        }
+        return true;
     }
 
     public void openStartPage(String startPageUrl) {
@@ -130,10 +125,11 @@ public class GUI implements PropertyChangeListener, ViewChangeListener, Location
     }
 
     private void openUrl(String url) {
-        Optional
-            .ofNullable(browserView)
-            .ifPresentOrElse(bw -> browserView.getBrowser().setUrl(url), () -> openInExternalBrowser(url));
-
+        if (browserView != null) {
+            browserView.getBrowser().setUrl(url);
+        } else {
+            openInExternalBrowser(url);
+        }
     }
 
     public void openBlankPage() {
