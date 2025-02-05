@@ -11,7 +11,7 @@
 	<description>task notifier client</description>
 
 	<properties>
-		<swt.version>4.3</swt.version>
+		<swt.version>3.116.0</swt.version>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
@@ -64,7 +64,7 @@
 			<version>2.2.7</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.swt</groupId>
+			<groupId>org.eclipse.platform</groupId>
 			<artifactId>${swt.artifactId}</artifactId>
 			<version>${swt.version}</version>
 		</dependency>
