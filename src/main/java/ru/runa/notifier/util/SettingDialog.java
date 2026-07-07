@@ -266,6 +266,7 @@ public class SettingDialog extends Dialog {
         shell.open();
 
         org.eclipse.swt.widgets.Display display = parent.getDisplay();
+        WidgetsManager.repackUntilStable(shell);
 
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {

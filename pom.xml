@@ -11,7 +11,7 @@
 	<description>task notifier client</description>
 
 	<properties>
-		<swt.version>4.3</swt.version>
+		<swt.version>3.116.0</swt.version>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
@@ -63,9 +63,15 @@
 			<version>2.2.7</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.swt</groupId>
+			<groupId>org.eclipse.platform</groupId>
 			<artifactId>${swt.artifactId}</artifactId>
 			<version>${swt.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.platform</groupId>
+					<artifactId>org.eclipse.swt</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.ws</groupId>
@@ -153,6 +159,18 @@
 		    </activation>
 		    <properties>
 		        <swt.artifactId>org.eclipse.swt.gtk.linux.x86_64</swt.artifactId>
+		    </properties>
+		</profile>
+		<profile>
+		    <id>linux64arm</id>
+		    <activation>
+		        <os>
+		            <family>linux</family>
+		            <arch>aarch64</arch>
+		        </os>
+		    </activation>
+		    <properties>
+		        <swt.artifactId>org.eclipse.swt.gtk.linux.aarch64</swt.artifactId>
 		    </properties>
 		</profile>
     </profiles>

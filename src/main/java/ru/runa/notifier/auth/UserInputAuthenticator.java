@@ -24,6 +24,7 @@ import ru.runa.notifier.GUI;
 import ru.runa.notifier.WFEConnection;
 import ru.runa.notifier.util.ResourcesManager;
 import ru.runa.notifier.util.SettingDialog;
+import ru.runa.notifier.util.WidgetsManager;
 import ru.runa.wfe.webservice.User;
 
 public class UserInputAuthenticator implements Authenticator {
@@ -179,6 +180,7 @@ public class UserInputAuthenticator implements Authenticator {
 
             shell.pack();
             shell.open();
+            WidgetsManager.repackUntilStable(shell);
 
             Display display = parent.getDisplay();
             while (!shell.isDisposed()) {
